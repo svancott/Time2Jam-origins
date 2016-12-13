@@ -28,4 +28,4 @@ $(window).load(function() {
      }
  });
 
-window.onload();
+//window.onload();
