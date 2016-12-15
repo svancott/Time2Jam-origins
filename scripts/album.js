@@ -140,24 +140,21 @@ var filterTimeCode = function (timeInSeconds) {
     if (seconds <= 9) {
         timeInSeconds = minutes + ":0" + seconds;
     } else {
-    timeInSeconds = minutes + ":" + seconds;
+        timeInSeconds = minutes + ":" + seconds;
     }
     return timeInSeconds;
 }
 
 var setCurrentTimeInPlayerBar = function(currentTime) {
     
-    if (currentSoundFile) {
-        var $currentTime = $('.seek-control .current-time');
-        $currentTime.html(filterTimeCode(currentSoundFile.getTime()));
-    }
+    var $currentTimeElement= $('.seek-control .current-time');
+    $currentTimeElement.text(currentTime);
+    
 }
 
 var setTotalTimeInPlayerBar = function (totalTime) {
-    if (currentSoundFile) {
-        var $totalTime = $('.seek-control .total-time');
-        $totalTime.html(filterTimeCode(currentSoundFile.getDuration()));
-    }
+    var $totalTimeElement = $('.seek-control .total-time');
+    $totalTimeElement.text(totalTime);
 }
 
 var updateSeekBarWhileSongPlays = function() {
@@ -167,11 +164,19 @@ var updateSeekBarWhileSongPlays = function() {
              // #11
              var seekBarFillRatio = this.getTime() / this.getDuration();
              var $seekBar = $('.seek-control .seek-bar');
-             var $currentTime = $('.seek-control .current-time');
-             var $totalTime = $('.seek-control .total-time');
+             var currentTime = this.getTime();
+             var totalTime = this.getDuration();
  
-             setTotalTimeInPlayerBar($totalTime);
-             updateSeekPercentage($seekBar, seekBarFillRatio); setCurrentTimeInPlayerBar($currentTime);
+             setTotalTimeInPlayerBar(filterTimeCode(totalTime));
+             updateSeekPercentage($seekBar, seekBarFillRatio); setCurrentTimeInPlayerBar(filterTimeCode(currentTime));
+             
+             if (currentTime > 0 && currentTime === totalTime) {
+                 currentlyPlayingSongNumber = currentlyPlayingSongNumber + 1;
+                 nextSong();
+                 currentSoundFile.play()
+                 setTotalTimeInPlayerBar(filterTimeCode(totalTime));
+                 updateSeekPercentage($seekBar, seekBarFillRatio); setCurrentTimeInPlayerBar(filterTimeCode(currentTime));
+             }
          });
      }
  };
@@ -338,8 +343,11 @@ var togglePlayFromPlayerBar = function() {
     var $mainControls = $('.main-controls .play-pause');
     
     if (currentSoundFile === null) {
+        
         setSong(1);
         currentSoundFile.play();
+        updatePlayerBarSong();
+        updateSeekBarWhileSongPlays();
         $mainControls.html(playerBarPauseButton);
         $('.song-item-number[data-song-number="1"]').html(pauseButtonTemplate)
     } else if (currentSoundFile.isPaused()) {

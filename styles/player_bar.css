@@ -103,7 +103,7 @@
  
  .seek-bar .fill {
      background-color: white;
-     width: 36%;
+     width: 0%;
      height: 0.25rem;
      border-radius: 2px;
  }
@@ -113,7 +113,7 @@
      height: 0.5rem;
      width: 0.5rem;
      background-color: white;
-     left: 36%;
+     left: 0%;
      top: 50%;
      /* #1 */
      margin-left: -0.25rem;
@@ -133,6 +133,9 @@
                  margin-top 100ms ease-in-out,
                  margin-left 100ms ease-in-out;
  }
+.player-bar .volume .fill  {
+    width: 80%;
+}
  
  .seek-bar:hover .thumb {
      width: 1.1rem;
@@ -145,6 +148,10 @@
      width: 25%;
      text-align: right;
  }
+
+.player-bar .volume .thumb {
+    left: 80%;
+}
 
  .player-bar .volume .icon {
      font-size: 1.1rem;
