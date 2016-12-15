@@ -36,7 +36,7 @@ var createSongRow = function (songNumber, songName, songLength) {
         '<tr class="album-view-song-item">'
       + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
       + '  <td class="song-item-title">' + songName + '</td>'
-      + '  <td class="song-item-duration">' + songLength + '</td>'
+      + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
       + '</tr>'
       ;
 
@@ -132,6 +132,34 @@ var setCurrentAlbum = function(album) {
      }
 };
 
+
+var filterTimeCode = function (timeInSeconds) {
+    parseFloat(timeInSeconds);
+    var minutes = Math.floor(timeInSeconds / 60);
+    var seconds = Math.floor(timeInSeconds % 60);
+    if (seconds <= 9) {
+        timeInSeconds = minutes + ":0" + seconds;
+    } else {
+    timeInSeconds = minutes + ":" + seconds;
+    }
+    return timeInSeconds;
+}
+
+var setCurrentTimeInPlayerBar = function(currentTime) {
+    
+    if (currentSoundFile) {
+        var $currentTime = $('.seek-control .current-time');
+        $currentTime.html(filterTimeCode(currentSoundFile.getTime()));
+    }
+}
+
+var setTotalTimeInPlayerBar = function (totalTime) {
+    if (currentSoundFile) {
+        var $totalTime = $('.seek-control .total-time');
+        $totalTime.html(filterTimeCode(currentSoundFile.getDuration()));
+    }
+}
+
 var updateSeekBarWhileSongPlays = function() {
      if (currentSoundFile) {
          // #10
@@ -139,8 +167,11 @@ var updateSeekBarWhileSongPlays = function() {
              // #11
              var seekBarFillRatio = this.getTime() / this.getDuration();
              var $seekBar = $('.seek-control .seek-bar');
+             var $currentTime = $('.seek-control .current-time');
+             var $totalTime = $('.seek-control .total-time');
  
-             updateSeekPercentage($seekBar, seekBarFillRatio);
+             setTotalTimeInPlayerBar($totalTime);
+             updateSeekPercentage($seekBar, seekBarFillRatio); setCurrentTimeInPlayerBar($currentTime);
          });
      }
  };
