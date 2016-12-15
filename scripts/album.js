@@ -301,10 +301,36 @@ var currentVolume = 80;
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
 
+var $mainControls = $('.main-controls .play-pause');
+
+var togglePlayFromPlayerBar = function() {
+    var $mainControls = $('.main-controls .play-pause');
+    
+    if (currentSoundFile === null) {
+        setSong(1);
+        currentSoundFile.play();
+        $mainControls.html(playerBarPauseButton);
+        $('.song-item-number[data-song-number="1"]').html(pauseButtonTemplate)
+    } else if (currentSoundFile.isPaused()) {
+        var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+        currentlyPlayingCell.html(pauseButtonTemplate);
+        $mainControls.html(playerBarPauseButton);
+        currentSoundFile.play();
+    } else {
+        var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+        currentlyPlayingCell.html(playButtonTemplate);
+        $mainControls.html(playerBarPlayButton)
+        currentSoundFile.pause();
+        
+        
+    }
+}; 
+
 $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
      setupSeekBars();
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
+     $mainControls.click(togglePlayFromPlayerBar);
   
  });
